@@ -29,10 +29,15 @@ pipeline {
 					}
 				}
 				stage('Selenium Tests') {
-					agent any
-					steps {
-						sh 'python ui_selenium_test.py' // Run the Selenium tests
-					}
+					agent {
+                        docker {
+                            image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
+                            args '-v .:/tests --network host' // Mount the tests directory
+                        }
+                    }
+                    steps {
+                        sh 'python selenium_test.py' // Run the Selenium tests
+                    }
 				}
 			}
 		}	
