@@ -28,7 +28,6 @@ pipeline {
 				agent any
 				steps {
 					sh './deploy.sh'
-					input message: 'Finished using the web site? (Click "Proceed" to continue)'
 					
 				}
 		}
