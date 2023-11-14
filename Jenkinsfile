@@ -30,28 +30,27 @@ pipeline {
 	// Automated Testing
 	stage('Selenium Headless Test'){
 		parallel {
-                stage('Deploy') {
-                    agent any
-                    steps {
-                        sh './deploy.sh'
-						input message: 'Finished using the web site? (Click "Proceed" to continue)'
-						sh './kill.sh'    
-                        }
-                }
-                stage('Selenium Tests') {
-                    agent {
-                        docker {
-                            image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
-                            args '-v .:/tests --network host' // Mount the tests directory
-                        }
-                    }
-                    steps {
-                        sh 'python ui_selenium_test.py' // Run the Selenium tests
-                    }
-                }
-            }
-        }
-	}
+			stage('Deploy') {
+				agent any
+				steps {
+					sh './deploy.sh'
+					input message: 'Finished using the web site? (Click "Proceed" to continue)'
+					sh './kill.sh'    
+					}
+			}
+			stage('Selenium Tests') {
+				agent {
+					docker {
+						image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
+						args '-v .:/tests --network host' // Mount the tests directory
+					}
+				}
+				steps {
+					sh 'python ui_selenium_test.py' // Run the Selenium tests
+				}
+			}
+		}
+	}	
 	post {		
 		always {
 			recordIssues enabledForFailure: true, tool: sonarQube()
