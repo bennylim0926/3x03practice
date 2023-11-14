@@ -25,7 +25,7 @@ pipeline {
 				steps {
 					sh './deploy.sh'
 					input message: 'Finished using the web site? (Click "Proceed" to continue)'
-					sh './kill.sh'    
+					
 				}
 			}
 			stage('Selenium Tests') {
@@ -47,6 +47,7 @@ pipeline {
                 script {
                     recordIssues enabledForFailure: true, tool: sonarQube()
                     dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+					sh './kill.sh'    
                 }
             }
         }
