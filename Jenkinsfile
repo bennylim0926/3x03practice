@@ -20,13 +20,14 @@ pipeline {
 		}
 		stage('Selenium Headless Test'){
 			parallel {
+				agent any
 				stage('Deploy') {
 					agent any
 					steps {
 						sh './deploy.sh'
 						input message: 'Finished using the web site? (Click "Proceed" to continue)'
 						sh './kill.sh'    
-						}
+					s}
 				}
 				stage('Selenium Tests') {
 					agent {
