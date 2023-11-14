@@ -1,7 +1,7 @@
 #Base image for the Flask application
 FROM python:3.10-alpine
 #Working Directory for the flask application
-WORKDIR /home/flask
+WORKDIR /flask
 #It will copy the Flask application files and the requirements.txt file
 COPY . /flask
 #It will install the dependencies for the Flask application
