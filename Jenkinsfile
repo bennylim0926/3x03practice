@@ -19,8 +19,7 @@ pipeline {
 			}
 		}
 		stage('Selenium Headless Test'){
-			parallel {
-				agent any
+			parallel {				
 				stage('Deploy') {
 					agent any
 					steps {
@@ -30,12 +29,7 @@ pipeline {
 					s}
 				}
 				stage('Selenium Tests') {
-					agent {
-						docker {
-							image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
-							args '-v .:/tests --network host' // Mount the tests directory
-						}
-					}
+					agent any
 					steps {
 						sh 'python ui_selenium_test.py' // Run the Selenium tests
 					}
