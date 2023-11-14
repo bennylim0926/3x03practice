@@ -19,27 +19,32 @@ pipeline {
 		// 	}
 		// }
 		stage('Selenium Headless Test'){
-		parallel {				
-			stage('Deploy') {
-				agent any
-				steps {
-					sh './deploy.sh'
-					input message: 'Finished using the web site? (Click "Proceed" to continue)'
-					
-				}
+			steps{
+				parallel {				
+					'Deploy': {
+						agent any
+						steps {
+							sh './deploy.sh'
+							input message: 'Finished using the web site? (Click "Proceed" to continue)'
+							sh './kill.sh'    
+							
+						}
 			}
-			stage('Selenium Tests') {
-				agent {
-					docker {
-						image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
-						args '-v .:/tests --network host' // Mount the tests directory
+					'Selenium Tests': {
+						agent {
+							docker {
+								image 'infologistix/docker-selenium-python' // or another image with Selenium and required browsers/drivers
+								args '-v .:/tests --network host' // Mount the tests directory
+							}
+						}
+						steps {
+							sh 'python ui_selenium_test.py' // Run the Selenium tests
+						}
 					}
-				}
-				steps {
-					sh 'python ui_selenium_test.py' // Run the Selenium tests
-				}
-			}
 		}
+
+			}
+		
 		}	
 		stage('Post Actions') {
             agent any // Specify an agent for post actions
@@ -47,7 +52,7 @@ pipeline {
                 script {
                     recordIssues enabledForFailure: true, tool: sonarQube()
                     dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-					sh './kill.sh'    
+					
                 }
             }
         }
