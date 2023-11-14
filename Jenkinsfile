@@ -1,7 +1,7 @@
 pipeline {
 	agent any
 	
-	// stages {
+	stages {
 	// 	stage ('Checkout') {
 	// 		steps {
 	// 			git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git' //to change
