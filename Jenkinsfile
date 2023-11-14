@@ -36,7 +36,7 @@ pipeline {
 					}
 				}
 				steps {
-					sh 'python selenium_test.py' // Run the Selenium tests
+					sh 'python ui_selenium_test.py' // Run the Selenium tests
 				}
 			}
 		}
