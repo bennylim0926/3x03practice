@@ -1,5 +1,5 @@
 pipeline {
-	agent none
+	agent any
 	stages {
 	// OWASP
 	stage('OWASP Dependency-Check Vulnerabilities') {
