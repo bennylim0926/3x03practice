@@ -4,8 +4,14 @@ pipeline {
 		// OWASP
 		stage('OWASP Dependency-Check Vulnerabilities') {
 			steps {
-				dependencyCheck additionalArguments: '--format HTML --format XML --suppression suppression.xml', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-			}
+        dependencyCheck additionalArguments: ''' 
+                    -o './'
+                    -s './'
+                    -f 'ALL' 
+                    --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+        
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+      }
 		}
 		// SonarQube
 		stage('Code Quality Check via SonarQube') {
@@ -36,17 +42,14 @@ pipeline {
 				steps {
 					sh 'python ui_selenium_test.py' // Run the Selenium tests
 				}
-			}		
-		stage('Post Actions') {
-            agent any // Specify an agent for post actions
-            steps {
-                script {
-                    recordIssues enabledForFailure: true, tool: sonarQube()
-                    dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-					sh './kill.sh'    
-                }
-            }
-        }
+			}				
+	}
+	post{
+		success {
+			recordIssues enabledForFailure: true, tool: sonarQube()
+			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+			sh './kill.sh'    
+		}
 	}
 	
 }
